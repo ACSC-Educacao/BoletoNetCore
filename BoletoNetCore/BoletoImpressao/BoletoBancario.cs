@@ -468,12 +468,12 @@ namespace BoletoNetCore
         /// <param name="saida">StringBuilder onde o conteudo sera salvo.</param>
         protected static void HtmlOfflineHeader(StringBuilder html, bool usaCsspdf = false)
         {
-            html.Append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
-            html.Append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
-            html.Append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
-            html.Append("<meta charset=\"utf-8\"/>\n");
-            html.Append("<head>");
-            html.Append("    <title>Boleto.Net</title>\n");
+            //html.Append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
+            //html.Append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
+            //html.Append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
+            //html.Append("<meta charset=\"utf-8\"/>\n");
+            //html.Append("<head>");
+            //html.Append("    <title>Boleto.Net</title>\n");
 
             #region Css
             {
@@ -491,8 +491,8 @@ namespace BoletoNetCore
             }
             #endregion Css
 
-            html.Append("     </head>\n");
-            html.Append("<body>\n");
+            //html.Append("     </head>\n");
+            //html.Append("<body>\n");
         }
 
 
@@ -502,8 +502,8 @@ namespace BoletoNetCore
         /// <param name="saida">StringBuilder onde o conteudo sera salvo.</param>
         protected static void HtmlOfflineFooter(StringBuilder saida)
         {
-            saida.Append("</body>\n");
-            saida.Append("</html>\n");
+            //saida.Append("</body>\n");
+            //saida.Append("</html>\n");
         }
 
 
