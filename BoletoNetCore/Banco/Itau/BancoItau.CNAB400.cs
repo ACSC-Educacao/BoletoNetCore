@@ -108,7 +108,8 @@ namespace BoletoNetCore
                         reg.Adicionar(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0352, 030, 0, boleto.Avalista.Nome, ' ');
                     }
                     reg.Adicionar(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0382, 004, 0, Empty, ' ');
-                    reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0386, 006, 0, "0", '0');
+                    var dataJuros = boleto.DataJuros >= boleto.DataVencimento ? boleto.DataJuros : boleto.DataVencimento;
+                    reg.Adicionar(TTiposDadoEDI.ediDataDDMMAA___________, 0386, 006, 0, dataJuros, '0');
                 }
                 reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0392, 002, 0, boleto.DiasProtesto, '0');
                 reg.Adicionar(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0394, 001, 0, Empty, ' ');
@@ -232,12 +233,29 @@ namespace BoletoNetCore
             }
         }
 
+        public override void CompletarHeaderRetornoCNAB400(string registro)
+        {
+            // 01 - cpf / 02 - cnpj
+            if (registro.Substring(1, 2) == "01")
+                this.Beneficiario.CPFCNPJ = registro.Substring(6, 11);
+            else
+                this.Beneficiario.CPFCNPJ = registro.Substring(3, 14);
+        }
+
         public override void LerHeaderRetornoCNAB400(string registro)
         {
             try
             {
                 if (registro.Substring(0, 9) != "02RETORNO")
                     throw new Exception("O arquivo não é do tipo \"02RETORNO\"");
+
+                this.Beneficiario = new Beneficiario();
+                this.Beneficiario.ContaBancaria = new ContaBancaria();
+
+                this.Beneficiario.ContaBancaria.Agencia = registro.Substring(26, 4);
+                this.Beneficiario.ContaBancaria.Conta = registro.Substring(32, 5);
+                this.Beneficiario.ContaBancaria.DigitoConta = registro.Substring(37, 1);
+                this.Beneficiario.Nome = registro.Substring(46, 30).Trim();
             }
             catch (Exception ex)
             {
@@ -289,6 +307,9 @@ namespace BoletoNetCore
 
                 // Data do Crédito
                 boleto.DataCredito = Utils.ToDateTime(Utils.ToInt32(registro.Substring(295, 6)).ToString("##-##-##"));
+
+                boleto.Pagador = new Pagador();
+                boleto.Pagador.Nome = registro.Substring(324, 30).Trim();
 
                 // Registro Retorno
                 boleto.RegistroArquivoRetorno = boleto.RegistroArquivoRetorno + registro + Environment.NewLine;
