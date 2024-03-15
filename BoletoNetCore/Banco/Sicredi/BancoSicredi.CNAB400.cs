@@ -101,7 +101,7 @@ namespace BoletoNetCore
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0005, 012, 0, string.Empty, ' '));                                           //005-016
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0017, 001, 0, "A", ' '));                                                    //017-017  Tipo de moeda: 'A' - REAL
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0018, 001, 0, "A", ' '));                                                    //018-018  Tipo de desconto: 'A' - VALOR
-                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0019, 001, 0, "B", ' '));                                                    //019-019  Tipo de juros: 'A' - VALOR / 'B' - PERCENTUAL
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0019, 001, 0, boleto.ValorJurosDia > 0 ? "A" : "B", ' '));                   //019-019  Tipo de juros: 'A' - VALOR / 'B' - PERCENTUAL
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0020, 028, 0, string.Empty, ' '));                                           //020-047
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0048, 009, 0, boleto.NossoNumero+boleto.NossoNumeroDV, '0'));                                     //048-056
 
@@ -121,18 +121,18 @@ namespace BoletoNetCore
                         break;
                 }
 
-                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0075, 002, 0, 0, '0'));                                                     //075-076
-                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0077, 002, 0, 0, '0'));                                                     //077-078
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0075, 002, 0, string.Empty, ' '));                                                     //075-076
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0077, 002, 0, string.Empty, ' '));                                                     //077-078
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0079, 004, 0, string.Empty, ' '));                                          //079-082
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0083, 010, 2, boleto.ValorDesconto, '0'));                                  //083-092
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0093, 004, 2, boleto.PercentualMulta, '0'));                                //093-096
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0097, 012, 0, string.Empty, ' '));                                          //097-108
-                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0109, 002, 0, "01", ' '));                                                  //109-110 01 - Cadastro de título;
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0109, 002, 0, boleto.CodigoMovimentoRetorno, ' '));                         //109-110
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0111, 010, 0, boleto.NumeroDocumento, ' '));                                //111-120
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediDataDDMMAA___________, 0121, 006, 0, boleto.DataVencimento, ' '));                                 //121-126
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0127, 013, 2, boleto.ValorTitulo, '0'));                                    //127-139
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0140, 009, 0, string.Empty, ' '));                                          //140-148
-                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0149, 001, 0, EspecieDocumentoSicrediCNAB400(boleto.EspecieDocumento), ' '));      //149-149
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0149, 001, 0, AjustaEspecieCnab400(boleto.EspecieDocumento), ' '));         //149-149
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0150, 001, 0, boleto.Aceite, ' '));                                         //150-150
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediDataDDMMAA___________, 0151, 006, 0, boleto.DataProcessamento, ' '));                              //151-156
 
@@ -152,8 +152,10 @@ namespace BoletoNetCore
                 }
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0157, 002, 0, vInstrucao1, '0'));                                           //157-158
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0159, 002, 0, vInstrucao2, '0'));                                           //159-160
-
-                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0161, 013, 2, boleto.PercentualJurosDia, '0'));                             //161-173
+                if(boleto.ValorJurosDia > 0)
+                    reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0161, 013, 2, boleto.ValorJurosDia, '0'));                             //161-173
+                else
+                    reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0161, 013, 2, boleto.PercentualJurosDia, '0'));                             //161-173
 
                 //DataDesconto
                 string vDataDesconto = "000000";
@@ -174,7 +176,7 @@ namespace BoletoNetCore
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0220, 001, 0, "0", '0'));                                                   //220-220
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0221, 014, 0, boleto.Pagador.CPFCNPJ, '0'));                                 //221-234
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0235, 040, 0, boleto.Pagador.Nome.ToUpper(), ' '));                          //235-274
-                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0275, 040, 0, boleto.Pagador.Endereco.LogradouroEndereco.ToUpper(), ' '));   //275-314
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0275, 040, 0, boleto.Pagador.Endereco.FormataLogradouro(40).ToUpper(), ' '));//275-314
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0315, 005, 0, 0, '0'));                                                     //315-319
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0320, 006, 0, 0, '0'));                                                     //320-325
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0326, 001, 0, string.Empty, ' '));                                          //326-326
@@ -195,10 +197,69 @@ namespace BoletoNetCore
                 throw new Exception("Erro ao gerar DETALHE do arquivo CNAB400.", ex);
             }
         }
-
-        private string EspecieDocumentoSicrediCNAB400(TipoEspecieDocumento EspecieDocumento)
+        public string GerarMensagemRemessa(Boleto boleto, ref int numeroRegistro)
         {
-            switch (EspecieDocumento)
+            try
+            {
+                numeroRegistro++;
+                TRegistroEDI reg = new TRegistroEDI();
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0001, 001, 0, "2", ' '));                                                    //001-001    Identificação do registro detalhe 
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0002, 011, 0, string.Empty, ' '));                                           //002-012    Filler
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0013, 009, 0, boleto.NossoNumero + boleto.NossoNumeroDV, '0'));              //013-021    Nosso número 
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0022, 080, 0, boleto.MensagemProtesto, ' '));                                //022-101    Instrução para impressão no boleto
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0102, 080, 0, boleto.MensagemLivre, ' '));                                   //102 a 181  Instrução para impressão no boleto
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0182, 080, 0, string.Empty, ' '));                                           //182 a 261  Instrução para impressão no boleto
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0262, 080, 0, string.Empty, ' '));                                           //262 a 341  Instrução para impressão no boleto
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0342, 010, 0, boleto.NumeroDocumento, ' '));                                 //342 a 351  Seu Número
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0352, 043, 0, string.Empty, ' '));                                           //352 a 394  Filler
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0395, 006, 0, numeroRegistro, '0'));                                         //395 a 400  Número seqüencial do registro 
+
+                reg.CodificarLinha();
+
+                string _detalhe = Utils.SubstituiCaracteresEspeciais(reg.LinhaRegistro);
+
+                return _detalhe;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao ler detalhe do arquivo de RETORNO / CNAB 400.", ex);
+            }
+        }
+
+        private TipoEspecieDocumento AjustaEspecieCnab400(string codigoEspecie)
+        {
+            switch (codigoEspecie)
+            {
+                case "A":
+                    return TipoEspecieDocumento.DMI;
+                case "B":
+                    return TipoEspecieDocumento.DR;
+                case "C":
+                    return TipoEspecieDocumento.NP;
+                case "D":
+                    return TipoEspecieDocumento.NPR;
+                case "E":
+                    return TipoEspecieDocumento.NS;
+                case "G":
+                    return TipoEspecieDocumento.RC;
+                case "H":
+                    return TipoEspecieDocumento.LC;
+                case "I":
+                    return TipoEspecieDocumento.ND;
+                case "J":
+                    return TipoEspecieDocumento.DSI;
+                case "K":
+                    return TipoEspecieDocumento.OU;
+                case "O":
+                    return TipoEspecieDocumento.BP;
+                default:
+                    return TipoEspecieDocumento.OU;
+            }
+        }
+
+        private string AjustaEspecieCnab400(TipoEspecieDocumento especieDocumento)
+        {
+            switch (especieDocumento)
             {
                 case TipoEspecieDocumento.DMI:
                     return "A";
@@ -214,13 +275,17 @@ namespace BoletoNetCore
                     return "G";
                 case TipoEspecieDocumento.LC:
                     return "H";
+                case TipoEspecieDocumento.ND:
+                    return "I";
                 case TipoEspecieDocumento.DSI:
                     return "J";
                 case TipoEspecieDocumento.OU:
                     return "K";
+                case TipoEspecieDocumento.BP:
+                    return "O";
+                default:
+                    return "K";
             }
-
-            return string.Empty;
         }
 
         private string GerarDetalheRemessaCNAB400_C1(Boleto boleto, int numeroRegistro)
@@ -251,6 +316,7 @@ namespace BoletoNetCore
 
                 // Número do Documento
                 boleto.NumeroDocumento = registro.Substring(116, 10).Trim();
+                boleto.EspecieDocumento = AjustaEspecieCnab400(registro.Substring(174, 1));
 
                 // Seu número - Seu número enviado na Remessa
                 boleto.NumeroControleParticipante = registro.Substring(116, 10).Trim();
@@ -260,6 +326,7 @@ namespace BoletoNetCore
 
                 //Valores do Título
                 boleto.ValorTitulo = Convert.ToDecimal(registro.Substring(152, 13)) / 100;
+                boleto.ValorTarifas = Convert.ToDecimal(registro.Substring(175, 13)) / 100;
                 boleto.ValorAbatimento = Convert.ToDecimal(registro.Substring(227, 13)) / 100;
                 boleto.ValorDesconto = Convert.ToDecimal(registro.Substring(240, 13)) / 100;
                 boleto.ValorPago = Convert.ToDecimal(registro.Substring(253, 13)) / 100;
@@ -289,81 +356,67 @@ namespace BoletoNetCore
             switch (codigo)
             {
                 case "02":
-                    return "Confirmação de entrada";
+                    return "Entrada confirmada";
                 case "03":
                     return "Entrada rejeitada";
-                case "04":
-                    return "Baixa de título liquidado por edital";
                 case "06":
                     return "Liquidação normal";
                 case "07":
-                    return "Liquidação parcial";
-                case "08":
-                    return "Baixa por pagamento, liquidação pelo saldo";
+                    return "Intenção de pagamento";
                 case "09":
-                    return "Devolução automática";
+                    return "Baixado automaticamente via arquivo";
                 case "10":
-                    return "Baixado conforme instruções";
-                case "11":
-                    return "Arquivo levantamento";
+                    return "Baixado conforme instruções da cooperativa";
                 case "12":
-                    return "Concessão de abatimento";
+                    return "Abatimento concedido";
                 case "13":
-                    return "Cancelamento de abatimento";
+                    return "Abatimento cancelado";
                 case "14":
                     return "Vencimento alterado";
                 case "15":
-                    return "Pagamento em cartório";
-                case "16":
-                    return "Alteração de dados";
-                case "18":
-                    return "Alteração de instruções";
+                    return "Liquidação em cartório";
+                case "17":
+                    return "Liquidação após baixa";
                 case "19":
-                    return "Confirmação de instrução protesto";
+                    return "Confirmação de recebimento de instrução de protesto";
                 case "20":
-                    return "Confirmação de instrução para sustar protesto";
-                case "21":
-                    return "Aguardando autorização para protesto por edital";
-                case "22":
-                    return "Protesto sustado por alteração de vencimento e prazo de cartório";
+                    return "Confirmação de recebimento de instrução de sustação de protesto";
                 case "23":
-                    return "Confirmação da entrada em cartório";
-                case "25":
-                    return "Devolução, liquidado anteriormente";
-                case "26":
-                    return "Devolvido pelo cartório – erro de informação";
+                    return "Entrada de título em cartório";
+                case "24":
+                    return "Entrada rejeitada por CEP irregular";
+                case "27":
+                    return "Baixa rejeitada";
                 case "28":
                     return "Tarifa";
+                case "29":
+                    return "Rejeição do pagador";
                 case "30":
-                    return "Cobrança a creditar (liquidação em trânsito)";
-                case "31":
-                    return "Título em trânsito pago em cartório";
+                    return "Alteração rejeitada";
                 case "32":
-                    return "Reembolso e transferência Desconto e Vendor ou carteira em garantia";
+                    return "Instrução rejeitada";
                 case "33":
-                    return "Reembolso e devolução Desconto e Vendor";
+                    return "Confirmação de pedido de alteração de outros dados";
                 case "34":
-                    return "Reembolso não efetuado por falta de saldo";
-                case "40":
-                    return "Baixa de títulos protestados";
-                case "41":
-                    return "Despesa de aponte";
-                case "42":
-                    return "Alteração de título";
-                case "43":
-                    return "Relação de títulos";
-                case "44":
-                    return "Manutenção mensal";
-                case "45":
-                    return "Sustação de cartório e envio de título a cartório";
-                case "46":
-                    return "Fornecimento de formulário pré-impresso";
-                case "47":
-                    return "Confirmação de entrada – Pagador DDA";
-                case "68":
-                    return "Acerto dos dados do rateio de crédito";
-                case "69":
-                    return "Cancelamento dos dados do rateio";
+                    return "Retirado de cartório e manutenção em carteira";
+                case "35":
+                    return "Aceite do pagador";
+                case "78":
+                    return "Confirmação de recebimento de pedido de negativação";
+                case "79":
+                    return "Confirmação de recebimento de pedido de exclusão de negativação";
+                case "80":
+                    return "Confirmação de entrada de negativação";
+                case "81":
+                    return "Entrada de negativação rejeitada";
+                case "82":
+                    return "Confirmação de exclusão de negativação";
+                case "83":
+                    return "Exclusão de negativação rejeitada";
+                case "84":
+                    return "Exclusão de negativação por outros motivos";
+                case "85":
+                    return "Ocorrência informacional por outros motivos";
                 default:
                     return "";
             }
@@ -381,6 +434,9 @@ namespace BoletoNetCore
             {
                 if (registro.Substring(0, 9) != "02RETORNO")
                     throw new Exception("O arquivo não é do tipo \"02RETORNO\"");
+
+                this.Beneficiario = new Beneficiario();
+                this.Beneficiario.Codigo = registro.Substring(26, 5);
             }
             catch (Exception ex)
             {

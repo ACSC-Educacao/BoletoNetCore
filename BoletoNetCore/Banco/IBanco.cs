@@ -26,6 +26,11 @@ namespace BoletoNetCore
         int TamanhoConta { get; }
 
         /// <summary>
+        /// Define se o arquivo CNAB é de desconto de duplicatas
+        /// </summary>
+        bool DescontoDuplicatas { get; }
+
+        /// <summary>
         /// Formata o benefici�rio (Ag�ncia, Conta, C�digo)
         /// </summary>
         void FormataBeneficiario();
@@ -51,6 +56,11 @@ namespace BoletoNetCore
         /// Gera o Trailer do arquivo de remessa
         /// </summary>
         string GerarDetalheRemessa(TipoArquivo tipoArquivo, Boleto boleto, ref int numeroRegistro);
+
+        /// <summary>
+        /// Registra a mensagem de preotesto ou mensagem livre na remessa.
+        /// </summary>
+        string GerarMensagemRemessa(TipoArquivo tipoArquivo, Boleto boleto, ref int numeroRegistro);
 
         /// <summary>
         /// Gera o Trailer do arquivo de remessa

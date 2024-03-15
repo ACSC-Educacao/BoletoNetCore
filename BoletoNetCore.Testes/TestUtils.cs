@@ -50,7 +50,7 @@ namespace BoletoNetCore.Testes
                         Bairro = "Bairro",
                         Cidade = "Cidade",
                         UF = "SP",
-                        CEP = "56789012"
+                        CEP = "04205000"
                     }
                 };
             return new Pagador
@@ -65,7 +65,7 @@ namespace BoletoNetCore.Testes
                     Bairro = "Bairro",
                     Cidade = "Cidade",
                     UF = "SP",
-                    CEP = "12345678"
+                    CEP = "01013020"
                 }
             };
         }
@@ -89,9 +89,9 @@ namespace BoletoNetCore.Testes
             var boleto = new Boleto(banco)
             {
                 Pagador = GerarPagador(),
-                DataEmissao = DateTime.Now.AddDays(-3),
+                DataEmissao = DateTime.Now.AddDays(-1),//.AddDays(-3),
                 DataProcessamento = DateTime.Now,
-                DataVencimento = DateTime.Now.AddMonths(i),
+                DataVencimento = DateTime.Now.AddDays(-1),//.AddMonths(i),
                 ValorTitulo = (decimal)100 * i,
                 NossoNumero = NossoNumeroInicial == 0 ? "" : (NossoNumeroInicial + _proximoNossoNumero).ToString(),
                 NumeroDocumento = "BB" + _proximoNossoNumero.ToString("D6") + (char)(64 + i),
@@ -99,12 +99,16 @@ namespace BoletoNetCore.Testes
                 Aceite = aceite,
                 CodigoInstrucao1 = "11",
                 CodigoInstrucao2 = "22",
-                DataDesconto = DateTime.Now.AddMonths(i),
-                ValorDesconto = (decimal)(100 * i * 0.10),
-                DataMulta = DateTime.Now.AddMonths(i),
+                //DataDesconto = DateTime.Now.AddMonths(i),
+                //ValorDesconto = (decimal)(100 * i * 0.10),
+                //DataDesconto2 = DateTime.Now.AddMonths(i).AddDays(2),
+                //ValorDesconto2 = (decimal)(100 * i * 0.12),
+                //DataDesconto3 = DateTime.Now.AddMonths(i).AddDays(3),
+                //ValorDesconto3 = (decimal)(100 * i * 0.13),
+                DataMulta = DateTime.Now,//.AddMonths(i),
                 PercentualMulta = (decimal)2.00,
                 ValorMulta = (decimal)(100 * i * (2.00 / 100)),
-                DataJuros = DateTime.Now.AddMonths(i),
+                DataJuros = DateTime.Now,//.AddMonths(i),
                 PercentualJurosDia = (decimal)0.2,
                 ValorJurosDia = (decimal)(100 * i * (0.2 / 100)),
                 AvisoDebitoAutomaticoContaCorrente = "2",
@@ -117,6 +121,10 @@ namespace BoletoNetCore.Testes
             StringBuilder msgCaixa = new StringBuilder();
             if (boleto.ValorDesconto > 0)
                 msgCaixa.AppendLine($"Conceder desconto de {boleto.ValorDesconto.ToString("R$ ##,##0.00")} até {boleto.DataDesconto.ToString("dd/MM/yyyy")}. ");
+            if (boleto.ValorDesconto2 > 0)
+                msgCaixa.AppendLine($"Conceder desconto de {boleto.ValorDesconto2.ToString("R$ ##,##0.00")} até {boleto.DataDesconto2.ToString("dd/MM/yyyy")}. ");
+            if (boleto.ValorDesconto3 > 0)
+                msgCaixa.AppendLine($"Conceder desconto de {boleto.ValorDesconto3.ToString("R$ ##,##0.00")} até {boleto.DataDesconto3.ToString("dd/MM/yyyy")}. ");
             if (boleto.ValorMulta > 0)
                 msgCaixa.AppendLine($"Cobrar multa de {boleto.ValorMulta.ToString("R$ ##,##0.00")} após o vencimento. ");
             if (boleto.ValorJurosDia > 0)
@@ -197,8 +205,7 @@ namespace BoletoNetCore.Testes
 
             if (gerarBoletoPdfHtml)
             {
-                RotativaConfiguration.RotativaPath = "Rotativa";
-                RotativaConfiguration.IsWindows = true;
+                RotativaConfiguration.Setup();
 
                 // Gera arquivo PDF
                 try

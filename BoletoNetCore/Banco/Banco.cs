@@ -21,7 +21,9 @@ namespace BoletoNetCore
             [341] = BancoItau.Instance,
             [422] = BancoSafra.Instance,
             [748] = BancoSicredi.Instance,
-            [756] = BancoSicoob.Instance
+            [756] = BancoSicoob.Instance,
+            [097] = BancoCrediSIS.Instance,
+            [077] = BancoInter.Instance
         };
 
         public static IBanco Instancia(int codigoBanco)
@@ -88,6 +90,16 @@ namespace BoletoNetCore
             if (boleto.ImprimirValoresAuxiliares == true && boleto.ValorDesconto > 0)
             {
                 boleto.MensagemInstrucoesCaixaFormatado += $"Conceder desconto de R$ {boleto.ValorDesconto.ToString("N2")} ATÉ {boleto.DataDesconto.ToString("dd/MM/yyyy")}{Environment.NewLine}";
+            }
+            //DESCONTO 2
+            if (boleto.ImprimirValoresAuxiliares == true && boleto.ValorDesconto2 > 0)
+            {
+                boleto.MensagemInstrucoesCaixaFormatado += $"Conceder desconto de R$ {boleto.ValorDesconto2.ToString("N2")} ATÉ {boleto.DataDesconto2.ToString("dd/MM/yyyy")}{Environment.NewLine}";
+            }
+            //DESCONTO 3
+            if (boleto.ImprimirValoresAuxiliares == true && boleto.ValorDesconto3 > 0)
+            {
+                boleto.MensagemInstrucoesCaixaFormatado += $"Conceder desconto de R$ {boleto.ValorDesconto3.ToString("N2")} ATÉ {boleto.DataDesconto3.ToString("dd/MM/yyyy")}{Environment.NewLine}";
             }
 
             //Aqui, define se a mensagem de instrução manual deve ser impressa, 
